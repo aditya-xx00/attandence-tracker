@@ -1,0 +1,165 @@
+import React, { useState } from 'react';
+
+interface Student {
+  id: number;
+  name: string;
+  present: boolean;
+}
+
+const App = () => {
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [students, setStudents] = useState([
+    { id: 1, name: 'John Doe', present: false },
+    { id: 2, name: 'Jane Doe', present: false },
+    { id: 3, name: 'Bob Smith', present: false },
+    { id: 4, name: 'Student 4', present: false },
+    { id: 5, name: 'Student 5', present: false },
+    { id: 6, name: 'Student 6', present: false },
+    { id: 7, name: 'Student 7', present: false },
+    { id: 8, name: 'Student 8', present: false },
+    { id: 9, name: 'Student 9', present: false },
+    { id: 10, name: 'Student 10', present: false },
+    { id: 11, name: 'Student 11', present: false },
+    { id: 12, name: 'Student 12', present: false },
+    { id: 13, name: 'Student 13', present: false },
+    { id: 14, name: 'Student 14', present: false },
+    { id: 15, name: 'Student 15', present: false },
+    { id: 16, name: 'Student 16', present: false },
+    { id: 17, name: 'Student 17', present: false },
+    { id: 18, name: 'Student 18', present: false },
+    { id: 19, name: 'Student 19', present: false },
+    { id: 20, name: 'Student 20', present: false },
+    { id: 21, name: 'Student 21', present: false },
+    { id: 22, name: 'Student 22', present: false },
+    { id: 23, name: 'Student 23', present: false },
+    { id: 24, name: 'Student 24', present: false },
+    { id: 25, name: 'Student 25', present: false },
+    { id: 26, name: 'Student 26', present: false },
+    { id: 27, name: 'Student 27', present: false },
+    { id: 28, name: 'Student 28', present: false },
+    { id: 29, name: 'Student 29', present: false },
+    { id: 30, name: 'Student 30', present: false },
+    { id: 31, name: 'Student 31', present: false },
+    { id: 32, name: 'Student 32', present: false },
+    { id: 33, name: 'Student 33', present: false },
+  ]);
+  const [output, setOutput] = useState(false);
+  const [presentCount, setPresentCount] = useState(0);
+  const [absentCount, setAbsentCount] = useState(0);
+  const [presentStudents, setPresentStudents] = useState<string[]>([]);
+  const [showTracker, setShowTracker] = useState(true);
+  const [dateEditable, setDateEditable] = useState(true);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDate(e.target.value);
+  };
+
+  const handlePresentChange = (index: number) => {
+    const newStudents = [...students];
+    newStudents[index].present = !newStudents[index].present;
+    setStudents(newStudents);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const presentStudents = students.filter((student) => student.present).map((student) => student.name);
+    setPresentCount(presentStudents.length);
+    setAbsentCount(students.length - presentStudents.length);
+    setPresentStudents(presentStudents);
+    setOutput(true);
+    setDateEditable(false);
+  };
+
+  const handleReset = () => {
+    setOutput(false);
+    setDateEditable(true);
+  };
+
+  const handleShowTracker = () => {
+    setShowTracker(!showTracker);
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <div className="flex justify-between mb-2">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+          onClick={handleShowTracker}
+        >
+          {showTracker ? 'Hide' : 'Show'} Attendance Tracker
+        </button>
+        {output && (
+          <button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+        )}
+      </div>
+      {showTracker && (
+        <div>
+          <form onSubmit={handleSubmit}>
+            <div className="flex justify-between mb-2">
+              <label className="block text-gray-700 text-sm font-bold mb-1" htmlFor="date">
+                Date:
+              </label>
+              <input
+                className="bg-gray-200 border-2 border-gray-400 rounded-lg p-2"
+                type="date"
+                id="date"
+                value={date}
+                onChange={handleDateChange}
+                disabled={!dateEditable}
+              />
+            </div>
+            {students.map((student, index) => (
+              <div key={index} className="flex justify-between mb-1">
+                <span className="block text-gray-700 text-sm font-bold">{student.id}. {student.name}</span>
+                <div className="flex items-center">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    checked={student.present}
+                    onChange={() => handlePresentChange(index)}
+                  />
+                  <span className={`text-lg ${student.present ? 'text-green-500' : 'text-red-500'}`}>
+                    {student.present ? 'Present' : 'Absent'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
+              type="submit"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+      )}
+      {output && (
+        <div className="mt-2">
+          <h2 className="text-gray-700 text-lg font-bold mb-2">Output:</h2>
+          <p className="text-gray-700 text-sm font-bold mb-1">Date: {date}</p>
+          <p className="text-gray-700 text-sm font-bold mb-1">
+            Present: {presentCount} student{presentCount > 1 ? 's' : ''}
+          </p>
+          <p className="text-gray-700 text-sm font-bold mb-1">
+            Absent: {absentCount} student{absentCount > 1 ? 's' : ''}
+          </p>
+          <p className="text-gray-700 text-sm font-bold mb-1">Present Students:</p>
+          <ul>
+            {presentStudents.map((student, index) => (
+              <li key={index} className="text-gray-700 text-sm font-bold mb-1">
+                {student}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default App;
